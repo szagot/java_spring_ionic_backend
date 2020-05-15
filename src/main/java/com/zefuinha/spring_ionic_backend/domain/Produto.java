@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import lombok.EqualsAndHashCode;
@@ -16,38 +18,42 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Categoria usando os anotations do lombok
+ * Produtos usando os anotations do lombok
  * 
  * https://projectlombok.org/features/all
  */
 
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "nome" })
+@EqualsAndHashCode(exclude = { "nome", "preco" })
 @Getter
 @Setter
-@Entity(name = "categorias")
-public class Categoria implements Serializable {
+@Entity(name = "produtos")
+public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private Double preco;
 
-	// Mapeamento é do outro lado (em Produto)
-	@ManyToMany(mappedBy = "categorias")
-	private List<Produto> produtos = new ArrayList<>();
+	// Mapeamento é desse lado
+	@ManyToMany
+	@JoinTable(name = "categorias_do_produto", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+	private List<Categoria> categorias = new ArrayList<>();
 
 	/**
-	 * Necessário criar construtor pq a lista de produtos não vai nele
+	 * Necessário criar o construtor pq a lista de categorias não vai nele
 	 * 
 	 * @param id
 	 * @param nome
+	 * @param preco
 	 */
-	public Categoria(Integer id, String nome) {
+	public Produto(Integer id, String nome, Double preco) {
 		super();
 		this.id = id;
 		this.nome = nome;
+		this.preco = preco;
 	}
 
 }
