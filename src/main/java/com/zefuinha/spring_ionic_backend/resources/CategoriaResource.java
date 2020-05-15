@@ -31,28 +31,18 @@ public class CategoriaResource {
 	/**
 	 * GET /categorias
 	 *
-	 * Listagem de teste
-	 * 
 	 * @return
 	 */
 	@GetMapping
-	public List<Categoria> get() {
-		// TODO: Mudar depois
-		Categoria cat1 = new Categoria(1, "Informática");
-		Categoria cat2 = new Categoria(2, "Escritório");
-		Categoria cat3 = new Categoria();
+	public ResponseEntity<List<Categoria>> get() {
+		List<Categoria> categorias = service.findAll();
 
-		List<Categoria> categorias = new ArrayList<>();
-		categorias.addAll(Arrays.asList(cat1, cat2));
-
-		return categorias;
+		return ResponseEntity.ok().body(categorias);
 	}
 
 	/**
 	 * GET /categorias/{id}
 	 *
-	 * Listagem de teste
-	 * 
 	 * @return
 	 */
 	@GetMapping(value = "/{id}")
@@ -61,7 +51,7 @@ public class CategoriaResource {
 		Categoria categoria = service.findById(id);
 
 		return ResponseEntity.ok().body(categoria);
-		
+
 	}
 
 }
