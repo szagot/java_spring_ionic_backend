@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +39,13 @@ public class Produto implements Serializable {
 	private String nome;
 	private Double preco;
 
-	// Mapeamento é desse lado
+	@JsonBackReference
 	@ManyToMany
-	@JoinTable(name = "categorias_do_produto", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
+	@JoinTable(
+		name = "categorias_do_produto", 
+		joinColumns = @JoinColumn(name = "produto_id"), 
+		inverseJoinColumns = @JoinColumn(name = "categoria_id")
+	)
 	private List<Categoria> categorias = new ArrayList<>();
 
 	/**
