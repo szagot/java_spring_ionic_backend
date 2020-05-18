@@ -2,7 +2,9 @@ package com.zefuinha.spring_ionic_backend.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -26,7 +29,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "preco", "categorias" })
+@EqualsAndHashCode(exclude = { "preco", "categorias", "itens" })
 @Entity(name = "produtos")
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,12 +42,11 @@ public class Produto implements Serializable {
 
 	@JsonBackReference
 	@ManyToMany
-	@JoinTable(
-		name = "categorias_do_produto", 
-		joinColumns = @JoinColumn(name = "produto_id"), 
-		inverseJoinColumns = @JoinColumn(name = "categoria_id")
-	)
+	@JoinTable(name = "categorias_do_produto", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
 	private List<Categoria> categorias = new ArrayList<>();
+
+	@OneToMany(mappedBy = "id.produto")
+	private Set<ItemPedido> itens = new HashSet<>();
 
 	/**
 	 * Necessário criar o construtor pq a lista de categorias não vai nele
@@ -58,6 +60,21 @@ public class Produto implements Serializable {
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
+	}
+
+	/**
+	 * Devolve a lista de pedidos associados a esse produto
+	 * 
+	 * @return
+	 */
+	public List<Pedido> getPedidos() {
+		List<Pedido> pedidos = new ArrayList<>();
+
+		for (ItemPedido x : itens) {
+			pedidos.add(x.getPedido());
+		}
+
+		return pedidos;
 	}
 
 }
