@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones" })
+@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos" })
 @Entity(name = "clientes")
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -47,6 +48,10 @@ public class Cliente implements Serializable {
 	@ElementCollection
 	@CollectionTable(name = "telefones")
 	private Set<String> telefones = new HashSet<>();
+
+	@JsonBackReference
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos = new ArrayList<>();
 
 	/**
 	 * Necessário para não incluir listas

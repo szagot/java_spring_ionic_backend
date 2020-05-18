@@ -1,5 +1,6 @@
 package com.zefuinha.spring_ionic_backend;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.zefuinha.spring_ionic_backend.domain.Cidade;
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.Endereco;
 import com.zefuinha.spring_ionic_backend.domain.Estado;
+import com.zefuinha.spring_ionic_backend.domain.Pagamento;
+import com.zefuinha.spring_ionic_backend.domain.PagamentoComBoleto;
+import com.zefuinha.spring_ionic_backend.domain.PagamentoComCartao;
+import com.zefuinha.spring_ionic_backend.domain.Pedido;
 import com.zefuinha.spring_ionic_backend.domain.Produto;
+import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
 import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 import com.zefuinha.spring_ionic_backend.repositories.CategoriaRepository;
 import com.zefuinha.spring_ionic_backend.repositories.CidadeRepository;
 import com.zefuinha.spring_ionic_backend.repositories.ClienteRepository;
 import com.zefuinha.spring_ionic_backend.repositories.EnderecoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.EstadoRepository;
+import com.zefuinha.spring_ionic_backend.repositories.PagamentoRepository;
+import com.zefuinha.spring_ionic_backend.repositories.PedidoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -41,6 +49,12 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+
+	@Autowired
+	private PedidoRepository pedidoRepository;
+
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIonicBackendApplication.class, args);
@@ -95,7 +109,22 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 		clienteRepository.save(cli1);
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
-		
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"),
+				null);
+		ped2.setPagamento(pagto2);
+
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+
 	}
 
 }
