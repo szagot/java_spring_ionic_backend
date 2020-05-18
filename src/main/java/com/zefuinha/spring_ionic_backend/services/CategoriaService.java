@@ -35,7 +35,14 @@ public class CategoriaService {
 	public Categoria insert(Categoria categoria) {
 		// Garante que o objeto inserido seja novo, sem ID
 		categoria.setId(null);
-		
+
+		return repository.save(categoria);
+	}
+
+	public Categoria update(Categoria categoria) {
+		// Garante que o ID exista. Se não existir, o método já emite a exceção
+		findById(categoria.getId());
+
 		return repository.save(categoria);
 	}
 
