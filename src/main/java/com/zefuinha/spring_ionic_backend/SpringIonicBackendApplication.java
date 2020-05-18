@@ -13,6 +13,7 @@ import com.zefuinha.spring_ionic_backend.domain.Cidade;
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.Endereco;
 import com.zefuinha.spring_ionic_backend.domain.Estado;
+import com.zefuinha.spring_ionic_backend.domain.ItemPedido;
 import com.zefuinha.spring_ionic_backend.domain.Pagamento;
 import com.zefuinha.spring_ionic_backend.domain.PagamentoComBoleto;
 import com.zefuinha.spring_ionic_backend.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.zefuinha.spring_ionic_backend.repositories.CidadeRepository;
 import com.zefuinha.spring_ionic_backend.repositories.ClienteRepository;
 import com.zefuinha.spring_ionic_backend.repositories.EnderecoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.EstadoRepository;
+import com.zefuinha.spring_ionic_backend.repositories.ItemPedidoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.PagamentoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.PedidoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.ProdutoRepository;
@@ -55,6 +57,9 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIonicBackendApplication.class, args);
@@ -124,6 +129,20 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+
+		// Instanciando Itens dos pedidos
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.0, 1, 2000.0);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.0, 2, 80.0);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.0, 1, 800.0);
+
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().add(ip3);
+
+		p1.getItens().add(ip1);
+		p2.getItens().add(ip3);
+		p3.getItens().add(ip2);
+
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 
 	}
 
