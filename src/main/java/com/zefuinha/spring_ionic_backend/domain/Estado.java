@@ -8,27 +8,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import javax.persistence.OneToMany;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Categoria usando os anotations do lombok
- * 
- * https://projectlombok.org/features/all
- */
-
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "produtos" })
 @Getter
 @Setter
-@Entity(name = "categorias")
-public class Categoria implements Serializable {
+@EqualsAndHashCode(exclude = { "cidades" })
+@Entity(name = "estados")
+public class Estado implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -36,17 +28,16 @@ public class Categoria implements Serializable {
 	private Integer id;
 	private String nome;
 
-	@JsonManagedReference
-	@ManyToMany(mappedBy = "categorias")
-	private List<Produto> produtos = new ArrayList<>();
+	@OneToMany(mappedBy = "estado")
+	private List<Cidade> cidades = new ArrayList<>();
 
 	/**
-	 * Necessário criar construtor pq a lista de produtos não vai nele
+	 * Necessário para não incluir a lista de cidades
 	 * 
 	 * @param id
 	 * @param nome
 	 */
-	public Categoria(Integer id, String nome) {
+	public Estado(Integer id, String nome) {
 		super();
 		this.id = id;
 		this.nome = nome;

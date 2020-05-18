@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
+import com.zefuinha.spring_ionic_backend.domain.Cidade;
+import com.zefuinha.spring_ionic_backend.domain.Estado;
 import com.zefuinha.spring_ionic_backend.domain.Produto;
 import com.zefuinha.spring_ionic_backend.repositories.CategoriaRepository;
+import com.zefuinha.spring_ionic_backend.repositories.CidadeRepository;
+import com.zefuinha.spring_ionic_backend.repositories.EstadoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -20,6 +24,12 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
+
+	@Autowired
+	private CidadeRepository cidadeRepository;
+
+	@Autowired
+	private EstadoRepository estadoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIonicBackendApplication.class, args);
@@ -51,6 +61,19 @@ public class SpringIonicBackendApplication implements CommandLineRunner {
 
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
+
+		Estado e1 = new Estado(null, "MG");
+		Estado e2 = new Estado(null, "SP");
+
+		Cidade c1 = new Cidade(null, "Uberlândia", e1);
+		Cidade c2 = new Cidade(null, "São Paulo", e2);
+		Cidade c3 = new Cidade(null, "Campinas", e2);
+
+		e1.getCidades().add(c1);
+		e2.getCidades().addAll(Arrays.asList(c2, c3));
+
+		estadoRepository.saveAll(Arrays.asList(e1, e2));
+		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 
 	}
 

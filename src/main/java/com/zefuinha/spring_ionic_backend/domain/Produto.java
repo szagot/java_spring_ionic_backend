@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "nome", "preco" })
+@EqualsAndHashCode(exclude = { "preco", "categorias" })
 @Getter
 @Setter
 @Entity(name = "produtos")
