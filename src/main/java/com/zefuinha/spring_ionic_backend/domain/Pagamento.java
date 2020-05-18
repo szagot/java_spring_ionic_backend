@@ -10,7 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
 
 import lombok.Data;
@@ -41,7 +41,7 @@ public abstract class Pagamento implements Serializable {
 	/**
 	 * \@MapsId faz com que o ID de pagamento seja o mesmo que o id do pedido
 	 */
-	@JsonBackReference
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "pedido_id")
 	@MapsId
