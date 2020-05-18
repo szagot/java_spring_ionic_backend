@@ -28,9 +28,15 @@ public class CategoriaService {
 
 		// Retorna a categoria, ou então uma exceção
 		return categoria.orElseThrow(() -> new ObjectNotFoundException(
-			"Categoria não encontrada. Id: " + id + ", Tipo: " + Categoria.class.getName())
-		);
+				"Categoria não encontrada. Id: " + id + ", Tipo: " + Categoria.class.getName()));
 
+	}
+
+	public Categoria insert(Categoria categoria) {
+		// Garante que o objeto inserido seja novo, sem ID
+		categoria.setId(null);
+		
+		return repository.save(categoria);
 	}
 
 }
