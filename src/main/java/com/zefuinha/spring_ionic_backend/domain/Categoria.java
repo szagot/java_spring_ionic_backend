@@ -12,10 +12,9 @@ import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Categoria usando os anotations do lombok
@@ -23,10 +22,9 @@ import lombok.Setter;
  * https://projectlombok.org/features/all
  */
 
+@Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "produtos" })
-@Getter
-@Setter
 @Entity(name = "categorias")
 public class Categoria implements Serializable {
 	private static final long serialVersionUID = 1L;

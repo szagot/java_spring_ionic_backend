@@ -14,10 +14,9 @@ import javax.persistence.ManyToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Produtos usando os anotations do lombok
@@ -25,10 +24,9 @@ import lombok.Setter;
  * https://projectlombok.org/features/all
  */
 
+@Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "preco", "categorias" })
-@Getter
-@Setter
 @Entity(name = "produtos")
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
