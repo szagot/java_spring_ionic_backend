@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
+import com.zefuinha.spring_ionic_backend.dto.CategoriaDTO;
 import com.zefuinha.spring_ionic_backend.repositories.CategoriaRepository;
 import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
@@ -75,6 +76,16 @@ public class CategoriaService {
 		PageRequest pageRequest = PageRequest.of(page, limit, Direction.valueOf(direction), orderBy);
 
 		return repository.findAll(pageRequest);
+	}
+
+	/**
+	 * Auxiliar para converter de DTO para Entidade
+	 * 
+	 * @param categoria
+	 * @return
+	 */
+	public Categoria fromDTO(CategoriaDTO dto) {
+		return new Categoria(dto.getId(), dto.getNome());
 	}
 
 }

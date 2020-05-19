@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -85,10 +87,12 @@ public class CategoriaResource {
 
 	/**
 	 * POST /categorias
+	 * 
+	 * Adicionado o \@Valid para ativar as validações do DTO
 	 */
 	@PostMapping
-	public ResponseEntity<Void> insert(@RequestBody Categoria categoria) {
-		categoria = service.insert(categoria);
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO categoriaDTO) {
+		Categoria categoria = service.insert(service.fromDTO(categoriaDTO));
 
 		// Gera a URI do recurso inserido
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoria.getId())
@@ -101,9 +105,9 @@ public class CategoriaResource {
 	 * PUT /categorias/{id}
 	 */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody Categoria categoria) {
-		categoria.setId(id);
-		categoria = service.update(categoria);
+	public ResponseEntity<Void> update(@PathVariable Integer id, @Valid @RequestBody CategoriaDTO categoriaDTO) {
+		categoriaDTO.setId(id);
+		service.update(service.fromDTO(categoriaDTO));
 
 		return ResponseEntity.noContent().build();
 	}
