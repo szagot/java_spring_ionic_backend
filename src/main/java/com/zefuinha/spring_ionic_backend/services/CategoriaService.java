@@ -45,11 +45,22 @@ public class CategoriaService {
 		return repository.save(categoria);
 	}
 
-	public Categoria update(Categoria categoria) {
+	public Categoria update(Categoria categoriaAtt) {
 		// Garante que o ID exista. Se não existir, o método já emite a exceção
-		findById(categoria.getId());
+		Categoria categoria = findById(categoriaAtt.getId());
+		updateData(categoria, categoriaAtt);
 
 		return repository.save(categoria);
+	}
+
+	/**
+	 * Auxiliar para atualizar um cliente
+	 * 
+	 * @param clienteOld
+	 * @param cliente
+	 */
+	private void updateData(Categoria categoria, Categoria categoriaAtt) {
+		categoria.setNome(categoriaAtt.getNome());
 	}
 
 	public void delete(Integer id) {
