@@ -9,10 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.zefuinha.spring_ionic_backend.domain.Cidade;
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
+import com.zefuinha.spring_ionic_backend.domain.Endereco;
+import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 import com.zefuinha.spring_ionic_backend.dto.ClienteDTO;
+import com.zefuinha.spring_ionic_backend.dto.ClienteNewDTO;
 import com.zefuinha.spring_ionic_backend.repositories.ClienteRepository;
+import com.zefuinha.spring_ionic_backend.repositories.EnderecoRepository;
 import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
@@ -21,6 +27,9 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository repository;
+
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public List<Cliente> findAll() {
 		return repository.findAll();
@@ -38,12 +47,19 @@ public class ClienteService {
 
 	}
 
-	// TODO
+	/**
+	 * \@Transactional Garante que o endereço será salvo na mesma transação
+	 */
+	@Transactional
 	public Cliente insert(Cliente cliente) {
 		// Garante que o objeto inserido seja novo, sem ID
 		cliente.setId(null);
 
-		return repository.save(cliente);
+		// Salva cliente e os endereços
+		cliente = repository.save(cliente);
+		enderecoRepository.saveAll(cliente.getEnderecos());
+
+		return cliente;
 	}
 
 	public Cliente update(Cliente clienteAtt) {
@@ -99,5 +115,34 @@ public class ClienteService {
 	 */
 	public Cliente fromDTO(ClienteDTO dto) {
 		return new Cliente(dto.getId(), dto.getNome(), dto.getEmail(), null, null);
+	}
+
+	/**
+	 * Auxiliar para converter de DTO complexo para Entidade para criação
+	 * 
+	 * @param cliente
+	 * @return
+	 */
+	public Cliente fromDTO(ClienteNewDTO dto) {
+		Cliente cli = new Cliente(null, dto.getNome(), dto.getEmail(), dto.getCpfOuCnpj(),
+				TipoCliente.toEnum(dto.getPessoa()));
+
+		Cidade cid = new Cidade(dto.getCidadeId(), null, null);
+		
+		Endereco end = new Endereco(null, dto.getLogradouro(), dto.getNumero(), dto.getComplemento(), dto.getBairro(),
+				dto.getCep(), cid, cli);
+
+		cli.getEnderecos().add(end);
+
+		cli.getTelefones().add(dto.getTel());
+		// Telefones opcionais
+		if (dto.getTel2() != null) {
+			cli.getTelefones().add(dto.getTel2());
+		}
+		if (dto.getTel3() != null) {
+			cli.getTelefones().add(dto.getTel3());
+		}
+
+		return cli;
 	}
 }

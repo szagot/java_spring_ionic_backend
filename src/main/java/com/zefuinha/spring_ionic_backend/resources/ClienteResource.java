@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.dto.ClienteDTO;
+import com.zefuinha.spring_ionic_backend.dto.ClienteNewDTO;
 import com.zefuinha.spring_ionic_backend.services.ClienteService;
 
 /**
@@ -87,11 +88,9 @@ public class ClienteResource {
 
 	/**
 	 * POST /clientes
-	 * 
-	 * Adicionado o \@Valid para ativar as validações do DTO
 	 */
 	@PostMapping
-	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteDTO clienteDTO) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO clienteDTO) {
 		Cliente cliente = service.insert(service.fromDTO(clienteDTO));
 
 		// Gera a URI do recurso inserido

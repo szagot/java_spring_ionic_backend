@@ -1,5 +1,7 @@
 package com.zefuinha.spring_ionic_backend.dto;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
@@ -14,7 +16,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ClienteDTO {
+public class ClienteDTO  implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	// Apenas campos alteráveis
 	private Integer id;
 
