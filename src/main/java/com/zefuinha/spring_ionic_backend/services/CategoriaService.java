@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
 import com.zefuinha.spring_ionic_backend.repositories.CategoriaRepository;
+import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -50,7 +52,11 @@ public class CategoriaService {
 		// Garante que o ID exista. Se não existir, o método já emite a exceção
 		Categoria categoria = findById(id);
 
-		repository.delete(categoria);
+		try {
+			repository.delete(categoria);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possua produtos.");
+		}
 	}
 
 }
