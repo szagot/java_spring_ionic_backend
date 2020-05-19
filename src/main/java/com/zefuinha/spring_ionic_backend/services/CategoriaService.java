@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
@@ -57,6 +60,21 @@ public class CategoriaService {
 		} catch (DataIntegrityViolationException e) {
 			throw new DataIntegrityException("Não é possível excluir uma categoria que possua produtos.");
 		}
+	}
+
+	/**
+	 * Auxiliar para paginação
+	 * 
+	 * @param page      Qt de páginas
+	 * @param limit     Registros por página
+	 * @param orderBy   Ordenar por qual campo
+	 * @param direction Direção da ordenação
+	 * @return
+	 */
+	public Page<Categoria> findPage(Integer page, Integer limit, String orderBy, String direction) {
+		PageRequest pageRequest = PageRequest.of(page, limit, Direction.valueOf(direction), orderBy);
+
+		return repository.findAll(pageRequest);
 	}
 
 }
