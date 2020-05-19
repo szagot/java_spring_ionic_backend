@@ -2,6 +2,7 @@ package com.zefuinha.spring_ionic_backend.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
+import com.zefuinha.spring_ionic_backend.dto.CategoriaDTO;
 import com.zefuinha.spring_ionic_backend.services.CategoriaService;
 
 /**
@@ -36,10 +38,13 @@ public class CategoriaResource {
 	 * GET /categorias
 	 */
 	@GetMapping
-	public ResponseEntity<List<Categoria>> get() {
+	public ResponseEntity<List<CategoriaDTO>> get() {
 		List<Categoria> categorias = service.findAll();
 
-		return ResponseEntity.ok().body(categorias);
+		// Converte para DTO
+		List<CategoriaDTO> dto = categorias.stream().map(x -> new CategoriaDTO(x)).collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(dto);
 	}
 
 	/**
