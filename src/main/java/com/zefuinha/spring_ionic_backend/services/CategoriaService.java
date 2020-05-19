@@ -46,4 +46,11 @@ public class CategoriaService {
 		return repository.save(categoria);
 	}
 
+	public void delete(Integer id) {
+		// Garante que o ID exista. Se não existir, o método já emite a exceção
+		Categoria categoria = findById(id);
+
+		repository.delete(categoria);
+	}
+
 }
