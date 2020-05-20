@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,11 +34,15 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	
+	@Column(unique = true) // Impede repetição de erros 
 	private String email;
+	
 	private String cpfOuCnpj;
 	private Integer pessoa;
 
-	// Reflete em cascata a todas as operações (Se apagar o cliente, o endereço é apagado)
+	// Reflete em cascata a todas as operações (Se apagar o cliente, o endereço é
+	// apagado)
 	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
