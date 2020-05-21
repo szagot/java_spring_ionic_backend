@@ -58,7 +58,7 @@ public class ProdutoService {
 		// Pega as categorias da lista de Ids informados
 		List<Categoria> categorias = categoriaRepository.findAllById(catIds);
 
-		return repository.search(busca, categorias, pageRequest);
+		return repository.findDistinctByNomeContainingIgnoreCaseAndCategoriasIn(busca, categorias, pageRequest);
 	}
 
 }
