@@ -54,8 +54,9 @@ public class CategoriaResource {
 	/**
 	 * GET /categorias/page?page=1&limit=2&orderBy=id&direction=DESC
 	 */
+	// @formatter:off
 	@GetMapping(value = "/page")
-	public ResponseEntity<Page<CategoriaDTO>> getPerPage(// @formatter:off
+	public ResponseEntity<Page<CategoriaDTO>> getPerPage(
 			@RequestParam(value = "page", defaultValue = "0")
 			Integer page, 
 			@RequestParam(value = "limit", defaultValue = "10")
@@ -64,8 +65,6 @@ public class CategoriaResource {
 			String orderBy, 
 			@RequestParam(value = "direction", defaultValue = "ASC")
 			String direction
-			 
-			// @formatter:on
 	) {
 		Page<Categoria> categorias = service.findPage(page, limit, orderBy, direction);
 
@@ -74,6 +73,7 @@ public class CategoriaResource {
 
 		return ResponseEntity.ok().body(dto);
 	}
+	// @formatter:on
 
 	/**
 	 * GET /categorias/{id}

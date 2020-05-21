@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "estado", "pedido" })
-@Entity(name = "pagamentos")
+@Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Pagamento implements Serializable {
 	private static final long serialVersionUID = 1L;

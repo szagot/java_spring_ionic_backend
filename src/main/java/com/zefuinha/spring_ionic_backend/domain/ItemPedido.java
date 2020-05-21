@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "desconto", "quantidade", "preco" })
-@Entity(name = "itens_do_pedido")
+@Entity
 public class ItemPedido implements Serializable {
 	private static final long serialVersionUID = 1L;
 

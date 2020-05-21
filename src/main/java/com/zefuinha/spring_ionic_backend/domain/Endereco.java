@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = { "logradouro", "numero", "complemento", "bairro", "cep", "cliente" })
-@Entity(name = "enderecos")
+@Entity
 public class Endereco implements Serializable {
 	private static final long serialVersionUID = 1L;
 

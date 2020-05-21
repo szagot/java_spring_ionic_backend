@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos" })
-@Entity(name = "clientes")
+@Entity
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
 

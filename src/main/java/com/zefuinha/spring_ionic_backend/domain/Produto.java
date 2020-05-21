@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "preco", "categorias", "itens" })
-@Entity(name = "produtos")
+@Entity
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 

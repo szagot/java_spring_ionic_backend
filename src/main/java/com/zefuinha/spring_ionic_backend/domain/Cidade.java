@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "cidades")
+@Entity
 public class Cidade implements Serializable {
 	private static final long serialVersionUID = 1L;
 

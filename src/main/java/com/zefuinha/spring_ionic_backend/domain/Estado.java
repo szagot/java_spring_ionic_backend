@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = { "cidades" })
-@Entity(name = "estados")
+@Entity
 public class Estado implements Serializable {
 	private static final long serialVersionUID = 1L;
 
