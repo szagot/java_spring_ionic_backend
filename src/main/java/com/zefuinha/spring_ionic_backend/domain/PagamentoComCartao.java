@@ -2,6 +2,7 @@ package com.zefuinha.spring_ionic_backend.domain;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
 
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@JsonTypeName("cartao") // Informa o nome que deve ser usado para o tipo (vide Pagamento)
 public class PagamentoComCartao extends Pagamento {
 	private static final long serialVersionUID = 1L;
 

@@ -11,6 +11,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
 
 import lombok.Data;
@@ -24,6 +25,8 @@ import lombok.NoArgsConstructor;
  * 
  * strategy = InheritanceType.JOINED -> Para gerar uma só tabela para as filhas
  * strategy = InheritanceType.SINGLE_TABLE -> Para gerar uma tabela para cada
+ * 
+ * \@JsonTypeInfo - Informa para o JSON o tipo de pagamento (a classe filha)
  */
 
 @Data
@@ -31,6 +34,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(exclude = { "estado", "pedido" })
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "tipo")
 public abstract class Pagamento implements Serializable {
 	private static final long serialVersionUID = 1L;
 
