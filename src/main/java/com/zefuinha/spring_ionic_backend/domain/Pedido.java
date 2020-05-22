@@ -31,7 +31,7 @@ public class Pedido implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private Date criadoEm;
 
@@ -63,6 +63,20 @@ public class Pedido implements Serializable {
 		this.criadoEm = criadoEm;
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+
+	/**
+	 * Devolve o total do pedido
+	 * 
+	 * @return
+	 */
+	public Double getValorTotal() {
+		Double total = .0;
+		for (ItemPedido pedido : itens) {
+			total += pedido.getSubTotal();
+		}
+
+		return total;
 	}
 
 }
