@@ -48,6 +48,11 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- MySQL -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
 		<!-- Ferramentas de Desenvolvedor -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
