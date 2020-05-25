@@ -1,8 +1,11 @@
 package com.zefuinha.spring_ionic_backend.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -77,6 +80,36 @@ public class Pedido implements Serializable {
 		}
 
 		return total;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+		// ID
+		builder.append("Pedido Número: ");
+		builder.append(getId());
+		// Data
+		builder.append(", Criado em: ");
+		builder.append(sdf.format(getCriadoEm()));
+		// Cliente
+		builder.append(", Cliente: ");
+		builder.append(getCliente().getNome());
+		// Status pagamento
+		builder.append(", Situação do pagamento: ");
+		builder.append(getPagamento().getEstado().getDescricao());
+		// Produtos
+		builder.append("\nItens do Pedido:\n");
+		for (ItemPedido item : getItens()) {
+			builder.append("  • ");
+			builder.append(item);
+		}
+		builder.append("Valor Total: R$ ");
+		builder.append(nf.format(getValorTotal()));
+
+		return builder.toString();
 	}
 
 }

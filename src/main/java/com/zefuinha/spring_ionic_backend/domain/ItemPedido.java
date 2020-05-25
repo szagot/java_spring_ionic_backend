@@ -1,6 +1,8 @@
 package com.zefuinha.spring_ionic_backend.domain;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -69,4 +71,26 @@ public class ItemPedido implements Serializable {
 	public Double getSubTotal() {
 		return quantidade * (preco - desconto);
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR")); 
+		
+		// Nome do produto
+		builder.append(getProduto().getNome());
+		// Quantidade
+		builder.append(", Qt: ");
+		builder.append(getQuantidade());
+		// Valor
+		builder.append(", Preço unitário: ");
+		builder.append(nf.format(getPreco()));
+		// Subtotal
+		builder.append(", Subtotal: ");
+		builder.append(nf.format(getSubTotal()));
+		builder.append("\n");
+
+		return builder.toString();
+	}
 }
+

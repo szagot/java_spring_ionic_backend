@@ -31,6 +31,9 @@ public class PedidoService {
 
 	@Autowired
 	private ProdutoService produtoService;
+	
+	@Autowired
+	private ClienteService clienteService;
 
 	@Autowired
 	private BoletoService boletoService;
@@ -55,6 +58,8 @@ public class PedidoService {
 	public Pedido insert(Pedido pedido) {
 		// Garante que seja mesmo um novo pedido na data atual com pagamento pendente
 		pedido.setId(null);
+		// Associa o cliente do ID informado ao pedido
+		pedido.setCliente(clienteService.findById(pedido.getCliente().getId()));
 		pedido.setCriadoEm(new Date());
 		pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		pedido.getPagamento().setPedido(pedido);
@@ -72,13 +77,20 @@ public class PedidoService {
 
 		// Itens
 		for (ItemPedido item : pedido.getItens()) {
+			
 			item.setDesconto(.0);
+			// Setando o ID do produto do sistema
+			item.setProduto(produtoService.findById(item.getId().getProduto().getId()));
 			// Colocando o preço do item igual ao produto
-			item.setPreco(produtoService.findById(item.getProduto().getId()).getPreco());
+			item.setPreco(item.getProduto().getPreco());
+			// Setando o pedido
 			item.setPedido(pedido);
 		}
 		// Salvando itens do pedido
 		itemPedidoRepository.saveAll(pedido.getItens());
+
+		// Teste no console
+		System.out.println(pedido);
 
 		return pedido;
 	}
