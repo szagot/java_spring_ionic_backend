@@ -53,6 +53,11 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<!-- PostgreSQL -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
 		<!-- Ferramentas de Desenvolvedor -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -1,0 +1,161 @@
+-- Converted by db_converter
+START TRANSACTION;
+SET standard_conforming_strings=off;
+SET escape_string_warning=off;
+SET CONSTRAINTS ALL DEFERRED;
+
+CREATE TABLE "categoria" (
+    "id" integer NOT NULL,
+    "nome" varchar(510) DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "categorias_do_produto" (
+    "produto_id" integer NOT NULL,
+    "categoria_id" integer NOT NULL
+);
+
+CREATE TABLE "cidade" (
+    "id" integer NOT NULL,
+    "nome" varchar(510) DEFAULT NULL,
+    "estado_id" integer DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "cliente" (
+    "id" integer NOT NULL,
+    "cpf_ou_cnpj" varchar(510) DEFAULT NULL,
+    "email" varchar(510) DEFAULT NULL,
+    "nome" varchar(510) DEFAULT NULL,
+    "pessoa" integer DEFAULT NULL,
+    PRIMARY KEY ("id"),
+    UNIQUE ("email")
+);
+
+CREATE TABLE "endereco" (
+    "id" integer NOT NULL,
+    "bairro" varchar(510) DEFAULT NULL,
+    "cep" varchar(510) DEFAULT NULL,
+    "complemento" varchar(510) DEFAULT NULL,
+    "logradouro" varchar(510) DEFAULT NULL,
+    "numero" varchar(510) DEFAULT NULL,
+    "cidade_id" integer DEFAULT NULL,
+    "cliente_id" integer DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "estado" (
+    "id" integer NOT NULL,
+    "nome" varchar(510) DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "item_pedido" (
+    "desconto" double precision DEFAULT NULL,
+    "preco" double precision DEFAULT NULL,
+    "quantidade" integer DEFAULT NULL,
+    "pedido_id" integer NOT NULL,
+    "produto_id" integer NOT NULL,
+    PRIMARY KEY ("pedido_id","produto_id")
+);
+
+CREATE TABLE "pagamento" (
+    "pedido_id" integer NOT NULL,
+    "estado" integer DEFAULT NULL,
+    PRIMARY KEY ("pedido_id")
+);
+
+CREATE TABLE "pagamento_com_boleto" (
+    "data_pagamento" timestamp with time zone DEFAULT NULL,
+    "data_vencimento" timestamp with time zone DEFAULT NULL,
+    "pedido_id" integer NOT NULL,
+    PRIMARY KEY ("pedido_id")
+);
+
+CREATE TABLE "pagamento_com_cartao" (
+    "numero_de_parcelas" integer DEFAULT NULL,
+    "pedido_id" integer NOT NULL,
+    PRIMARY KEY ("pedido_id")
+);
+
+CREATE TABLE "pedido" (
+    "id" integer NOT NULL,
+    "criado_em" timestamp with time zone DEFAULT NULL,
+    "cliente_id" integer DEFAULT NULL,
+    "endereco_de_entrega_id" integer DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "produto" (
+    "id" integer NOT NULL,
+    "nome" varchar(510) DEFAULT NULL,
+    "preco" double precision DEFAULT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE TABLE "telefones" (
+    "cliente_id" integer NOT NULL,
+    "telefones" varchar(510) DEFAULT NULL
+);
+
+
+-- Post-data save --
+COMMIT;
+START TRANSACTION;
+
+-- Typecasts --
+
+-- Foreign keys --
+ALTER TABLE "categorias_do_produto" ADD CONSTRAINT "FKailuncfgdeplgr2higulqxudn" FOREIGN KEY ("produto_id") REFERENCES "produto" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "categorias_do_produto" ("produto_id");
+ALTER TABLE "categorias_do_produto" ADD CONSTRAINT "FKqn00yt655qipllt55jv5dtlsi" FOREIGN KEY ("categoria_id") REFERENCES "categoria" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "categorias_do_produto" ("categoria_id");
+ALTER TABLE "cidade" ADD CONSTRAINT "FKkworrwk40xj58kevvh3evi500" FOREIGN KEY ("estado_id") REFERENCES "estado" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "cidade" ("estado_id");
+ALTER TABLE "endereco" ADD CONSTRAINT "FK8b1kcb3wucapb8dejshyn5fsx" FOREIGN KEY ("cidade_id") REFERENCES "cidade" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "endereco" ("cidade_id");
+ALTER TABLE "endereco" ADD CONSTRAINT "FK8s7ivtl4foyhrfam9xqom73n9" FOREIGN KEY ("cliente_id") REFERENCES "cliente" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "endereco" ("cliente_id");
+ALTER TABLE "item_pedido" ADD CONSTRAINT "FK60ym08cfoysa17wrn1swyiuda" FOREIGN KEY ("pedido_id") REFERENCES "pedido" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "item_pedido" ("pedido_id");
+ALTER TABLE "item_pedido" ADD CONSTRAINT "FKtk55mn6d6bvl5h0no5uagi3sf" FOREIGN KEY ("produto_id") REFERENCES "produto" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "item_pedido" ("produto_id");
+ALTER TABLE "pagamento" ADD CONSTRAINT "FKthad9tkw4188hb3qo1lm5ueb0" FOREIGN KEY ("pedido_id") REFERENCES "pedido" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "pagamento" ("pedido_id");
+ALTER TABLE "pagamento_com_boleto" ADD CONSTRAINT "FKcr74vrxf8nfph0knq2bho8doo" FOREIGN KEY ("pedido_id") REFERENCES "pagamento" ("pedido_id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "pagamento_com_boleto" ("pedido_id");
+ALTER TABLE "pagamento_com_cartao" ADD CONSTRAINT "FKta3cdnuuxclwfh52t4qi432ow" FOREIGN KEY ("pedido_id") REFERENCES "pagamento" ("pedido_id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "pagamento_com_cartao" ("pedido_id");
+ALTER TABLE "pedido" ADD CONSTRAINT "FK1fihyy2fnocpuwc74674qmfkv" FOREIGN KEY ("endereco_de_entrega_id") REFERENCES "endereco" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "pedido" ("endereco_de_entrega_id");
+ALTER TABLE "pedido" ADD CONSTRAINT "FK30s8j2ktpay6of18lbyqn3632" FOREIGN KEY ("cliente_id") REFERENCES "cliente" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "pedido" ("cliente_id");
+ALTER TABLE "telefones" ADD CONSTRAINT "FK8ujf1478gyy3vk8tur1cni603" FOREIGN KEY ("cliente_id") REFERENCES "cliente" ("id") DEFERRABLE INITIALLY DEFERRED;
+CREATE INDEX ON "telefones" ("cliente_id");
+
+-- Sequences --
+CREATE SEQUENCE categoria_id_seq;
+SELECT setval('categoria_id_seq', max(id)) FROM categoria;
+ALTER TABLE "categoria" ALTER COLUMN "id" SET DEFAULT nextval('categoria_id_seq');
+CREATE SEQUENCE cidade_id_seq;
+SELECT setval('cidade_id_seq', max(id)) FROM cidade;
+ALTER TABLE "cidade" ALTER COLUMN "id" SET DEFAULT nextval('cidade_id_seq');
+CREATE SEQUENCE cliente_id_seq;
+SELECT setval('cliente_id_seq', max(id)) FROM cliente;
+ALTER TABLE "cliente" ALTER COLUMN "id" SET DEFAULT nextval('cliente_id_seq');
+CREATE SEQUENCE endereco_id_seq;
+SELECT setval('endereco_id_seq', max(id)) FROM endereco;
+ALTER TABLE "endereco" ALTER COLUMN "id" SET DEFAULT nextval('endereco_id_seq');
+CREATE SEQUENCE estado_id_seq;
+SELECT setval('estado_id_seq', max(id)) FROM estado;
+ALTER TABLE "estado" ALTER COLUMN "id" SET DEFAULT nextval('estado_id_seq');
+CREATE SEQUENCE pedido_id_seq;
+SELECT setval('pedido_id_seq', max(id)) FROM pedido;
+ALTER TABLE "pedido" ALTER COLUMN "id" SET DEFAULT nextval('pedido_id_seq');
+CREATE SEQUENCE produto_id_seq;
+SELECT setval('produto_id_seq', max(id)) FROM produto;
+ALTER TABLE "produto" ALTER COLUMN "id" SET DEFAULT nextval('produto_id_seq');
+
+-- Full Text keys --
+
+COMMIT;
