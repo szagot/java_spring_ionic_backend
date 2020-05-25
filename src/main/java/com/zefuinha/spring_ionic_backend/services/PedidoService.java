@@ -37,6 +37,9 @@ public class PedidoService {
 
 	@Autowired
 	private BoletoService boletoService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	public List<Pedido> findAll() {
 		return repository.findAll();
@@ -89,8 +92,8 @@ public class PedidoService {
 		// Salvando itens do pedido
 		itemPedidoRepository.saveAll(pedido.getItens());
 
-		// Teste no console
-		System.out.println(pedido);
+		// Enviando email
+		emailService.sendEmailConfirmacaoPedido(pedido);
 
 		return pedido;
 	}
