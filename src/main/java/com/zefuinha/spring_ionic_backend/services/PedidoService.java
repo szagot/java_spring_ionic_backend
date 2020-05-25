@@ -4,10 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zefuinha.spring_ionic_backend.domain.ItemPedido;
 import com.zefuinha.spring_ionic_backend.domain.PagamentoComBoleto;
@@ -52,7 +51,8 @@ public class PedidoService {
 
 	}
 
-	public @Valid Pedido insert(Pedido pedido) {
+	@Transactional
+	public Pedido insert(Pedido pedido) {
 		// Garante que seja mesmo um novo pedido na data atual com pagamento pendente
 		pedido.setId(null);
 		pedido.setCriadoEm(new Date());
