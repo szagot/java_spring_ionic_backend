@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "default.remetente",
+    "type": "java.lang.String",
+    "description": "Remetente padrão"
+  },
+  {
+    "name": "default.destinatario",
+    "type": "java.lang.String",
+    "description": "Destinatário padrão"
+  }
+]}

@@ -9,7 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
  */
 public class FakeEmailService extends AbstractEmailService {
 
-	// Mantem um log único
+	// Logs no console
 	private static final Logger LOG = LoggerFactory.getLogger(FakeEmailService.class);
 
 	@Override
