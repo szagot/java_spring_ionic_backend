@@ -31,13 +31,13 @@ public class PedidoService {
 
 	@Autowired
 	private ProdutoService produtoService;
-	
+
 	@Autowired
 	private ClienteService clienteService;
 
 	@Autowired
 	private BoletoService boletoService;
-	
+
 	@Autowired
 	private EmailService emailService;
 
@@ -80,7 +80,7 @@ public class PedidoService {
 
 		// Itens
 		for (ItemPedido item : pedido.getItens()) {
-			
+
 			item.setDesconto(.0);
 			// Setando o ID do produto do sistema
 			item.setProduto(produtoService.findById(item.getId().getProduto().getId()));
@@ -92,8 +92,8 @@ public class PedidoService {
 		// Salvando itens do pedido
 		itemPedidoRepository.saveAll(pedido.getItens());
 
-		// Enviando email
-		emailService.sendEmailConfirmacaoPedido(pedido);
+		// Enviando email HTML (se possível)
+		emailService.sendEmailConfirmacaoPedidoHtml(pedido);
 
 		return pedido;
 	}
