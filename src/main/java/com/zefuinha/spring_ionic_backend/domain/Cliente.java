@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos" })
+@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos", "senha" })
 @Entity
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -40,6 +40,10 @@ public class Cliente implements Serializable {
 	
 	private String cpfOuCnpj;
 	private Integer pessoa;
+	
+	// Campo de senha não deve aparecer no JSON
+	@JsonIgnore
+	private String senha;
 
 	// Reflete em cascata a todas as operações (Se apagar o cliente, o endereço é
 	// apagado)
@@ -67,13 +71,14 @@ public class Cliente implements Serializable {
 	 * @param cpfOuCnpj
 	 * @param pessoa
 	 */
-	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente pessoa) {
+	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente pessoa, String senha) {
 		super();
 		this.id = id;
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.pessoa = (pessoa == null) ? null : pessoa.getCod();
+		this.senha = senha;
 	}
 
 	/**
