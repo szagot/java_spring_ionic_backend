@@ -20,6 +20,7 @@ import com.zefuinha.spring_ionic_backend.domain.PagamentoComCartao;
 import com.zefuinha.spring_ionic_backend.domain.Pedido;
 import com.zefuinha.spring_ionic_backend.domain.Produto;
 import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
+import com.zefuinha.spring_ionic_backend.domain.enums.Perfil;
 import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 import com.zefuinha.spring_ionic_backend.repositories.CategoriaRepository;
 import com.zefuinha.spring_ionic_backend.repositories.CidadeRepository;
@@ -116,22 +117,31 @@ public class DBService {
 		Cidade c1 = new Cidade(null, "Uberlândia", est1);
 		Cidade c2 = new Cidade(null, "São Paulo", est2);
 		Cidade c3 = new Cidade(null, "Campinas", est2);
+		Cidade c4 = new Cidade(null, "Serra Negra", est2);
 
 		est1.getCidades().add(c1);
-		est2.getCidades().addAll(Arrays.asList(c2, c3));
+		est2.getCidades().addAll(Arrays.asList(c2, c3, c4));
 
 		estadoRepository.saveAll(Arrays.asList(est1, est2));
-		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
+		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3, c4));
 
+		// Cliente Admin
 		Cliente cli1 = new Cliente(null, "Daniel Bispo", "danielbispo.sp64@gmail.com", "304.714.108-88", TipoCliente.PF, passEncoder.encode("Teste1234"));
 		cli1.getTelefones().addAll(Arrays.asList("19997014416", "1996707272"));
+		cli1.addPerfil(Perfil.ADMIN);
 
-		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jd Helena", "05271160", c1, cli1);
-		Endereco e2 = new Endereco(null, "Av. Matos Soares", "105", null, "Centro", "13930000", c2, cli1);
-		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		// Cliente comum
+		Cliente cli2 = new Cliente(null, "Maria Silva", "maria@gmail.com", "057.139.540-64", TipoCliente.PF, passEncoder.encode("1234"));
+		cli2.getTelefones().add("1938924718");
+		
+		Endereco e1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jd Helena", "05271160", c1, cli2);
+		Endereco e2 = new Endereco(null, "Av. Matos Soares", "105", null, "Centro", "13930000", c2, cli2);
+		Endereco e3 = new Endereco(null, "R. Herminio Alves de Godoi", "35", null, "Macacos", "13930000", c4, cli1);
+		cli1.getEnderecos().add(e3);
+		cli2.getEnderecos().addAll(Arrays.asList(e1, e2));
 
-		clienteRepository.save(cli1);
-		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		clienteRepository.saveAll(Arrays.asList(cli1, cli2));
+		enderecoRepository.saveAll(Arrays.asList(e1, e2, e3));
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);

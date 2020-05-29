@@ -5,26 +5,27 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zefuinha.spring_ionic_backend.domain.enums.Perfil;
 import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos", "senha" })
 @Entity
 public class Cliente implements Serializable {
@@ -34,13 +35,13 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
-	
-	@Column(unique = true) // Impede repetição de erros 
+
+	@Column(unique = true) // Impede repetição de erros
 	private String email;
-	
+
 	private String cpfOuCnpj;
 	private Integer pessoa;
-	
+
 	// Campo de senha não deve aparecer no JSON
 	@JsonIgnore
 	private String senha;
@@ -58,9 +59,21 @@ public class Cliente implements Serializable {
 	@CollectionTable(name = "telefones")
 	private Set<String> telefones = new HashSet<>();
 
+	// FetchType.EAGER garante que os perfis serão sempre buscados junto
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "perfis")
+	private Set<Integer> perfis = new HashSet<>();
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
+
+	/**
+	 * Todo cliente terá pelo menos o perfil de cliente
+	 */
+	public Cliente() {
+		addPerfil(Perfil.CLIENTE);
+	}
 
 	/**
 	 * Necessário para não incluir listas
@@ -79,6 +92,9 @@ public class Cliente implements Serializable {
 		this.cpfOuCnpj = cpfOuCnpj;
 		this.pessoa = (pessoa == null) ? null : pessoa.getCod();
 		this.senha = senha;
+
+		// Todo cliente terá pelo menos o perfil de cliente
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	/**
@@ -99,4 +115,21 @@ public class Cliente implements Serializable {
 		this.pessoa = pessoa.getCod();
 	}
 
+	/**
+	 * Pega os perfis do cliente no formato de ENUM
+	 * 
+	 * @return
+	 */
+	public Set<Perfil> getPerfis() {
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
+
+	/**
+	 * Seta um perfil novo para este cliente
+	 * 
+	 * @param perfil
+	 */
+	public void addPerfil(Perfil perfil) {
+		perfis.add(perfil.getCod());
+	}
 }
