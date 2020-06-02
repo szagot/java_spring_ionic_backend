@@ -47,7 +47,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		// Existe o cabeçalho? Começa com "Bearer "?
 		if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
 			// Verifica se o token é válido, passando o request e o token
-			UsernamePasswordAuthenticationToken auth = getAuthentication(request, headerAuth.substring(7));
+			UsernamePasswordAuthenticationToken auth = getAuthentication(headerAuth.substring(7));
 
 			// Autenticado?
 			if (auth != null) {
@@ -67,7 +67,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 	 * @param substring
 	 * @return
 	 */
-	private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request, String token) {
+	private UsernamePasswordAuthenticationToken getAuthentication(String token) {
 		// Verifica se o token é válido
 		if (jwtUtil.tokenValido(token)) {
 			// Pega o username
