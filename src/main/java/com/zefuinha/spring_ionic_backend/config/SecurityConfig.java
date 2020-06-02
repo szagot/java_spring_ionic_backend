@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.zefuinha.spring_ionic_backend.security.JWTAuthenticationFilter;
+import com.zefuinha.spring_ionic_backend.security.JWTAuthorizationFilter;
 import com.zefuinha.spring_ionic_backend.security.JWTUtil;
 
 @Configuration
@@ -28,11 +29,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// Pega os profiles
 	@Autowired
 	private Environment env;
-	
-	// Apesar de injetar UserDetailsService, o spring irá encontra o UserDetailsServiceImpl
+
+	// Apesar de injetar UserDetailsService, o spring irá encontra o
+	// UserDetailsServiceImpl
 	@Autowired
 	private UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	private JWTUtil jwtUtil;
 
@@ -72,14 +74,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
 				// Para todas as outras, exija autorização
 				.anyRequest().authenticated();
-		
+
 		// Adiciona o filtro de autenticação
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
-		
+
+		// Adiciona o filtro de autorização de authenticação
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
+
 		// Impede a criação de sessões
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
-	
+
 	/**
 	 * Mecanismo de autenticação
 	 */
