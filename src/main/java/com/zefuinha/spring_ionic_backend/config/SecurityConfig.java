@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,6 +25,7 @@ import com.zefuinha.spring_ionic_backend.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) // Permite definir perfis para recursos específicos
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	// Pega os profiles
@@ -38,17 +40,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JWTUtil jwtUtil;
 
-	// Quais endpoints estão liberados (sem necessidade de tolen)
+	// Quais endpoints estão liberados (sem necessidade de token)
 	private static final String[] PUBLIC_MATCHERS = {
 			// Console do BD da área de testes
 			"/h2-console/**" };
 
-	// Quais endpoints estão liberados apenas para GET (sem necessidade de tolen)
+	// Quais endpoints estão liberados apenas para GET (sem necessidade de token)
 	private static final String[] PUBLIC_MATCHERS_GET = {
 			// Produtos
 			"/produtos/**",
 			// Categorias
 			"/categorias/**" };
+
+	// Quais endpoints estão liberados apenas para POST (sem necessidade de token)
+	private static final String[] PUBLIC_MATCHERS_POST = {
+			// Clientes (permite alguem se cadastrar)
+			"/clientes/**" };
 
 	/**
 	 * Configuraçõe de autenticação
@@ -72,6 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(PUBLIC_MATCHERS).permitAll()
 				// Autoriza os endpoints de PUBLIC_MATCHERS_GET apenas para leitura
 				.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
+				// Autoriza os endpoints de PUBLIC_MATCHERS_POST apenas para criação
+				.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
 				// Para todas as outras, exija autorização
 				.anyRequest().authenticated();
 
