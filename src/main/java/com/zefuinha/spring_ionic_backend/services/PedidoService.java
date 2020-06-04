@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.ItemPedido;
 import com.zefuinha.spring_ionic_backend.domain.PagamentoComBoleto;
 import com.zefuinha.spring_ionic_backend.domain.Pedido;
@@ -15,6 +19,8 @@ import com.zefuinha.spring_ionic_backend.domain.enums.EstadoPagamento;
 import com.zefuinha.spring_ionic_backend.repositories.ItemPedidoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.PagamentoRepository;
 import com.zefuinha.spring_ionic_backend.repositories.PedidoRepository;
+import com.zefuinha.spring_ionic_backend.security.UserSecurity;
+import com.zefuinha.spring_ionic_backend.services.exceptions.AuthorizationException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -43,6 +49,22 @@ public class PedidoService {
 
 	public List<Pedido> findAll() {
 		return repository.findAll();
+	}
+
+	@Transactional
+	public Page<Pedido> findPage(Integer page, Integer limit, String orderBy, String direction) {
+		// Pega o usuário logado
+		UserSecurity user = UserService.authenticated();
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+
+		PageRequest pageRequest = PageRequest.of(page, limit, Direction.valueOf(direction), orderBy);
+
+		// Pega o cliente autenticado
+		Cliente cliente = clienteService.findById(user.getId());
+
+		return repository.findByCliente(cliente, pageRequest);
 	}
 
 	public Pedido findById(Integer id) {
