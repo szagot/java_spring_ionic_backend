@@ -91,4 +91,14 @@ public class UserSecurity implements UserDetails {
 		return true;
 	}
 
+	/**
+	 * Testa se o usuário possui o perfil informado
+	 * 
+	 * @param perfil
+	 * @return
+	 */
+	public boolean hasRole(Perfil perfil) {
+		return getAuthorities().contains(new SimpleGrantedAuthority(perfil.getDescricao()));
+	}
+
 }

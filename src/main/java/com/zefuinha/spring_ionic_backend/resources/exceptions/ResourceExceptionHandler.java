@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.zefuinha.spring_ionic_backend.services.exceptions.AuthorizationException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
@@ -69,6 +70,22 @@ public class ResourceExceptionHandler {
 		}
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+
+	}
+	
+	/**
+	 * Escuta os erros de usuário não permitido
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<StandarError> authorization(AuthorizationException e, HttpServletRequest request) {
+
+		StandarError err = new StandarError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 
 	}
 

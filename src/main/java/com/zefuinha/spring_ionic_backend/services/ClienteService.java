@@ -15,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zefuinha.spring_ionic_backend.domain.Cidade;
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.Endereco;
+import com.zefuinha.spring_ionic_backend.domain.enums.Perfil;
 import com.zefuinha.spring_ionic_backend.domain.enums.TipoCliente;
 import com.zefuinha.spring_ionic_backend.dto.ClienteDTO;
 import com.zefuinha.spring_ionic_backend.dto.ClienteNewDTO;
 import com.zefuinha.spring_ionic_backend.repositories.ClienteRepository;
 import com.zefuinha.spring_ionic_backend.repositories.EnderecoRepository;
+import com.zefuinha.spring_ionic_backend.security.UserSecurity;
+import com.zefuinha.spring_ionic_backend.services.exceptions.AuthorizationException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
@@ -40,6 +43,13 @@ public class ClienteService {
 	}
 
 	public Cliente findById(Integer id) {
+
+		// Verifica se o usuário logado tem permissão para pegar os dados solicitados
+		UserSecurity user = UserService.authenticated();
+		// Não tem usuário logado, ou ele não é admin e está pegando outro ID
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 
 		// O Optional evita que ocorra um NullException caso não seja encontrada a
 		// cliente do id informado
