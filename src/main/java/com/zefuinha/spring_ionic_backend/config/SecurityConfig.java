@@ -55,7 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// Quais endpoints estão liberados apenas para POST (sem necessidade de token)
 	private static final String[] PUBLIC_MATCHERS_POST = {
 			// Clientes (permite alguem se cadastrar)
-			"/clientes/**" };
+			"/clientes/**",
+			// Esqueci minha senha
+			"/auth/forgot/**"
+			};
 
 	/**
 	 * Configuraçõe de autenticação

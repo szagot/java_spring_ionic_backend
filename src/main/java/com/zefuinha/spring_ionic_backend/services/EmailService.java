@@ -4,6 +4,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.SimpleMailMessage;
 
+import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.Pedido;
 
 public interface EmailService {
@@ -39,5 +40,13 @@ public interface EmailService {
 	 * @param message
 	 */
 	void sendEmailHtml(MimeMessage message);
+
+	/**
+	 * Envia uma nova senha ao cliente
+	 * 
+	 * @param cliente
+	 * @param newPass
+	 */
+	void sendNewPasswordEmail(Cliente cliente, String newPass);
 
 }

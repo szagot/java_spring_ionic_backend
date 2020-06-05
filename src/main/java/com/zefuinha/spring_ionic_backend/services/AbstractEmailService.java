@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.zefuinha.spring_ionic_backend.domain.Cliente;
 import com.zefuinha.spring_ionic_backend.domain.Pedido;
 
 public abstract class AbstractEmailService implements EmailService {
@@ -107,5 +108,34 @@ public abstract class AbstractEmailService implements EmailService {
 		// Processando template, retornando o html em forma de string
 		return templateEngine.process("email/confirmacaoPedido", context);
 	}
+	
+	@Override
+	public void sendNewPasswordEmail(Cliente cliente, String newPass) {
+		SimpleMailMessage email = prepareNewPasswordEmail(cliente, newPass);
+		sendEmail(email);
+	}
 
+	/**
+	 * Prepara o corpo do email a partir de um cliente e senha
+	 * 
+	 * @param cliente
+	 * @param pass
+	 * @return
+	 */
+	protected SimpleMailMessage prepareNewPasswordEmail(Cliente cliente, String pass) {
+		SimpleMailMessage email = new SimpleMailMessage();
+
+		// Destinatário
+		email.setTo(cliente.getEmail());
+		// Remetente (pegando a partir da chave criada em application.properties
+		email.setFrom(remetente);
+		// Assunto
+		email.setSubject("Solicitação de nova senha");
+		// Data do email
+		email.setSentDate(new Date(System.currentTimeMillis()));
+		// Corpo do email
+		email.setText("Nova senha: " + pass);
+
+		return email;
+	}
 }
