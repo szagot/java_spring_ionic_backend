@@ -1,5 +1,6 @@
 package com.zefuinha.spring_ionic_backend.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zefuinha.spring_ionic_backend.domain.Cidade;
 import com.zefuinha.spring_ionic_backend.domain.Cliente;
@@ -37,6 +39,9 @@ public class ClienteService {
 
 	@Autowired
 	private BCryptPasswordEncoder passEncoder;
+
+	@Autowired
+	private CNService cnService;
 
 	public List<Cliente> findAll() {
 		return repository.findAll();
@@ -160,5 +165,15 @@ public class ClienteService {
 		}
 
 		return cli;
+	}
+
+	/**
+	 * Faz o upload de uma foto de perfil
+	 * 
+	 * @param multipartFile
+	 * @return
+	 */
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		return cnService.uploadFile(multipartFile);
 	}
 }

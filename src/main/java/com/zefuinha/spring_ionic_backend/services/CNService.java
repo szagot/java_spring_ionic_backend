@@ -1,12 +1,14 @@
 package com.zefuinha.spring_ionic_backend.services;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -18,8 +20,6 @@ import com.cloudinary.utils.ObjectUtils;
 @Service
 public class CNService {
 
-	private Logger LOG = LoggerFactory.getLogger(CNService.class);
-
 	@Autowired
 	private Cloudinary cnClient;
 
@@ -28,17 +28,46 @@ public class CNService {
 	 * 
 	 * @param localFilePath
 	 */
-	public void uploadFile(String localFilePath) {
+	public URI uploadFile(MultipartFile multipartFile) {
 		try {
-			LOG.info("Iniciando Upload");
-			Map response = cnClient.uploader().upload(localFilePath, ObjectUtils.emptyMap());
-			LOG.info("Finalizado " + response.toString());
-		} catch (IOException e) {
-			LOG.info("Exceção de entrada e saída: " + e.getMessage());
+			// Converte o multipart enviado para um File
+			File file = multipartFileToFile(multipartFile);
 
+			// Envia o arquivo
+			@SuppressWarnings("unchecked")
+			Map<String, String> response = cnClient.uploader().upload(file, ObjectUtils.emptyMap());
+
+			// Verifica se tudo ocorreu bem
+			if (response.isEmpty()) {
+				new RuntimeException("Erro eo enviar arquivo");
+			}
+
+			String securityUri = response.get("secure_url");
+			return URI.create(securityUri);
+
+		} catch (IOException e) {
+			new RuntimeException("Erro de IO: " + e.getMessage());
 		} catch (Exception e) {
-			LOG.info("Exceção indefinido: " + e.getMessage());
+			new RuntimeException("Erro desconhecido: " + e.getMessage());
 		}
+
+		return null;
+	}
+
+	/**
+	 * Converte um MultipartFile em um File
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	private static File multipartFileToFile(MultipartFile file) throws IOException {
+		File convFile = new File(file.getOriginalFilename());
+		convFile.createNewFile();
+		FileOutputStream fos = new FileOutputStream(convFile);
+		fos.write(file.getBytes());
+		fos.close();
+		return convFile;
 	}
 
 }

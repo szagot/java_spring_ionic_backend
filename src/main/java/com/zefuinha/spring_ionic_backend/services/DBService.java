@@ -65,10 +65,6 @@ public class DBService {
 	@Autowired
 	private BCryptPasswordEncoder passEncoder;
 
-	// TODO: Temporário para poder testar imagens
-	@Autowired
-	private CNService cnService;
-
 	public void instantiateTestDataBase() throws ParseException {
 		// Criando Dados de teste
 
@@ -175,9 +171,6 @@ public class DBService {
 		p3.getItens().add(ip2);
 
 		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
-		
-		// TODO: Testando upload de imagens
-		cnService.uploadFile("C:\\Users\\szago\\OneDrive\\Imagens\\SonicDash\\character_wallpaper_sonic.png");
 		
 	}
 
