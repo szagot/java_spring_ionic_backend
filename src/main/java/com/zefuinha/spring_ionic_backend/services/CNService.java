@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.zefuinha.spring_ionic_backend.services.exceptions.FileException;
 
 /**
  * Cloudnary: Serviços para imagens
@@ -38,20 +39,18 @@ public class CNService {
 			Map<String, String> response = cnClient.uploader().upload(file, ObjectUtils.emptyMap());
 
 			// Verifica se tudo ocorreu bem
-			if (response.isEmpty()) {
-				new RuntimeException("Erro eo enviar arquivo");
+			if (response.isEmpty() || response.get("secure_url").isEmpty()) {
+				throw new FileException("Erro eo enviar arquivo");
 			}
 
 			String securityUri = response.get("secure_url");
 			return URI.create(securityUri);
 
 		} catch (IOException e) {
-			new RuntimeException("Erro de IO: " + e.getMessage());
+			throw new FileException("Erro de IO: " + e.getMessage());
 		} catch (Exception e) {
-			new RuntimeException("Erro desconhecido: " + e.getMessage());
+			throw new FileException("Credenciais Inválidas");
 		}
-
-		return null;
 	}
 
 	/**

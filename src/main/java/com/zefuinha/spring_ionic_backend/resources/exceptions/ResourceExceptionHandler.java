@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.zefuinha.spring_ionic_backend.services.exceptions.AuthorizationException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.DataIntegrityException;
+import com.zefuinha.spring_ionic_backend.services.exceptions.FileException;
 import com.zefuinha.spring_ionic_backend.services.exceptions.ObjectNotFoundException;
 
 /**
@@ -62,7 +63,8 @@ public class ResourceExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<StandarError> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
 
-		ValidationError err = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de Validação", System.currentTimeMillis());
+		ValidationError err = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de Validação",
+				System.currentTimeMillis());
 
 		// Adicionando os erros por campo
 		for (FieldError x : e.getBindingResult().getFieldErrors()) {
@@ -72,7 +74,7 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 
 	}
-	
+
 	/**
 	 * Escuta os erros de usuário não permitido
 	 * 
@@ -86,6 +88,22 @@ public class ResourceExceptionHandler {
 		StandarError err = new StandarError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
 
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+
+	}
+
+	/**
+	 * Escuta os erros de arquivo (imagens)
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
+	@ExceptionHandler(FileException.class)
+	public ResponseEntity<StandarError> file(FileException e, HttpServletRequest request) {
+
+		StandarError err = new StandarError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 
 	}
 
