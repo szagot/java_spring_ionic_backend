@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +43,9 @@ public class ClienteService {
 
 	@Autowired
 	private CNService cnService;
+
+	@Value("${image.profile.size}")
+	private String profileSize;
 
 	public List<Cliente> findAll() {
 		return repository.findAll();
@@ -181,8 +185,13 @@ public class ClienteService {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
+		// O profileSize está vazio?
+		if(profileSize == null || profileSize.isEmpty()) {
+			profileSize = "0";
+		}
+
 		// Faz o upload da imagem
-		URI uri = cnService.uploadFile(multipartFile);
+		URI uri = cnService.uploadFile(multipartFile, Integer.parseInt(profileSize));
 		
 		// Pega o cliente logado
 		Cliente cli = repository.findById(user.getId()).orElseThrow(() -> new ObjectNotFoundException(
