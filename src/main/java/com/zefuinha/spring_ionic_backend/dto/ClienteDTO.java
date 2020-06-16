@@ -31,10 +31,13 @@ public class ClienteDTO  implements Serializable {
 	@NotEmpty(message = "Preenchimento obrigatório")
 	@Email(message = "Email inválido")
 	private String email;
+	
+	private String imageUrl;
 
 	public ClienteDTO(Cliente cliente) {
 		id = cliente.getId();
 		nome = cliente.getNome();
 		email = cliente.getEmail();
+		imageUrl = cliente.getImageUrl();
 	}
 }
