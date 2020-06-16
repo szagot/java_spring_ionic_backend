@@ -39,6 +39,11 @@ local.properties
 *.iws
 *.iml
 *.ipr
+./*.jpg
+./*.gif
+./*.jpeg
+./*.webp
+./*.png
 
 # Locally stored "Eclipse launch configurations"
 *.launch

@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,20 +25,39 @@ public class CNService {
 
 	@Autowired
 	private Cloudinary cnClient;
+	
+	@Value("${image.path}")
+	private String imagePath;
 
 	/**
 	 * Faz o upload de um arquivo
 	 * 
 	 * @param localFilePath
 	 */
+	@SuppressWarnings("unchecked")
 	public URI uploadFile(MultipartFile multipartFile) {
 		try {
+			// Pega a extenção do arquivo enviado, usando o commons.io
+			String ext = FilenameUtils.getExtension(multipartFile.getOriginalFilename()).toLowerCase();
+			String fileName = FilenameUtils.getBaseName(multipartFile.getOriginalFilename()).toLowerCase();
+
+			// É PNG, WEBP JPG ou GIF?
+			if (!"png".equals(ext) && !"webp".equals(ext) && !"jpg".equals(ext) && !"jpeg".equals(ext)
+					&& !"gif".equals(ext)) {
+				throw new FileException("Envie imagens apenas. Extenções permitidas: JPG, GIF, PNG, WEBP");
+			}
+
 			// Converte o multipart enviado para um File
 			File file = multipartFileToFile(multipartFile);
 
 			// Envia o arquivo
-			@SuppressWarnings("unchecked")
-			Map<String, String> response = cnClient.uploader().upload(file, ObjectUtils.emptyMap());
+			// @formatter:off
+			Map<?, ?> params = ObjectUtils.asMap(
+			    "public_id", imagePath + "/" + fileName, 
+			    "overwrite", true
+			);
+			// @formatter:on
+			Map<String, String> response = cnClient.uploader().upload(file, params);
 
 			// Verifica se tudo ocorreu bem
 			if (response.isEmpty() || response.get("secure_url").isEmpty()) {
