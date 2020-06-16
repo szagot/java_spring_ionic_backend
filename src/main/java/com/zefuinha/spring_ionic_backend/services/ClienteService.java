@@ -168,12 +168,31 @@ public class ClienteService {
 	}
 
 	/**
-	 * Faz o upload de uma foto de perfil
+	 * Faz o upload de uma foto de perfil e salva no cliente logado
 	 * 
 	 * @param multipartFile
 	 * @return
 	 */
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
-		return cnService.uploadFile(multipartFile);
+		// Verifica se o usuário logado tem permissão para pegar os dados solicitados
+		UserSecurity user = UserService.authenticated();
+		// Não tem usuário logado
+		if (user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		// Faz o upload da imagem
+		URI uri = cnService.uploadFile(multipartFile);
+		
+		// Pega o cliente logado
+		Cliente cli = repository.findById(user.getId()).orElseThrow(() -> new ObjectNotFoundException(
+				"Cliente não encontrado. Id: " + user.getId() + ", Tipo: " + Cliente.class.getName()));
+		
+		// Salva a imagem no cliente
+		cli.setImageUrl(uri.toString());
+		repository.save(cli);
+		
+		// Devolve a uri da imagem
+		return uri;
 	}
 }

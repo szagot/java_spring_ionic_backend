@@ -26,7 +26,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos", "senha" })
+@EqualsAndHashCode(exclude = { "nome", "enderecos", "telefones", "pedidos", "senha", "imageUrl" })
 @Entity
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -35,6 +35,7 @@ public class Cliente implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private String imageUrl;
 
 	@Column(unique = true) // Impede repetição de erros
 	private String email;
