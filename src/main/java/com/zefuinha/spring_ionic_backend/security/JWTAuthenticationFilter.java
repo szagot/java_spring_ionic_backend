@@ -67,6 +67,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String username = ((UserSecurity) auth.getPrincipal()).getUsername();
 		String token = jwtUtil.generateToken(username);
 		res.addHeader("Authorization", "Bearer " + token);
+		// Permite ao CORS exibir o cabeçalho de autenticação
+		res.addHeader("access-control-expose-headers", "Authorization");
 	}
 
 	/**

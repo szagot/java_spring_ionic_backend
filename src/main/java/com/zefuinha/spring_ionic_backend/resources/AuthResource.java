@@ -31,7 +31,7 @@ public class AuthResource {
 
 	@Autowired
 	private AuthService service;
-	
+
 	/**
 	 * POST /auth/refresh_token
 	 * 
@@ -45,9 +45,11 @@ public class AuthResource {
 		UserSecurity user = UserService.authenticated();
 		String token = jwtUtil.generateToken(user.getUsername());
 		response.addHeader("Authorization", "Bearer " + token);
+		// Permite ao CORS exibir o cabeçalho de autenticação
+		response.addHeader("access-control-expose-headers", "Authorization");
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	/**
 	 * POST /auth/forgot
 	 * 
@@ -61,7 +63,5 @@ public class AuthResource {
 		service.sendNewPassword(email.getEmail());
 		return ResponseEntity.noContent().build();
 	}
-	
-	
 
 }
