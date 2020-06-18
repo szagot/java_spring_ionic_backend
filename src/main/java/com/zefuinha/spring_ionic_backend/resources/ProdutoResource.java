@@ -1,13 +1,17 @@
 package com.zefuinha.spring_ionic_backend.resources;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zefuinha.spring_ionic_backend.domain.Produto;
 import com.zefuinha.spring_ionic_backend.dto.ProdutoDTO;
@@ -74,6 +78,26 @@ public class ProdutoResource {
 
 		return ResponseEntity.ok().body(produto);
 
+	}
+	
+	/**
+	 * POST /produtos/{id}/picture
+	 */
+	@PostMapping(value = "/{id}/picture")
+	public ResponseEntity<Void> uploadPicture(@PathVariable Integer id, @RequestParam(name="file") MultipartFile file) {
+		URI uri = service.uploadPicture(file, id);
+		
+		return ResponseEntity.created(uri).build();
+	}
+	
+	/**
+	 * POST /produtos/{id}/picture/small
+	 */
+	@PostMapping(value = "/{id}/picture/small")
+	public ResponseEntity<Void> uploadSmallPicture(@PathVariable Integer id, @RequestParam(name="file") MultipartFile file) {
+		URI uri = service.uploadSmallPicture(file, id);
+		
+		return ResponseEntity.created(uri).build();
 	}
 
 }

@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "produtos" })
+@EqualsAndHashCode(exclude = { "produtos", "imageUrl" })
 @Entity
 public class Categoria implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -31,6 +31,7 @@ public class Categoria implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	private String imageUrl;
 
 	@ManyToMany(mappedBy = "categorias")
 	private List<Produto> produtos = new ArrayList<>();

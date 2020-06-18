@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
@@ -130,6 +131,16 @@ public class CategoriaResource {
 		service.delete(id);
 
 		return ResponseEntity.noContent().build();
+	}
+	
+	/**
+	 * POST /categorias/{id}/picture
+	 */
+	@PostMapping(value = "/{id}/picture")
+	public ResponseEntity<Void> uploadPicture(@PathVariable Integer id, @RequestParam(name="file") MultipartFile file) {
+		URI uri = service.uploadPicture(file, id);
+		
+		return ResponseEntity.created(uri).build();
 	}
 
 }

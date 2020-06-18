@@ -1,14 +1,17 @@
 package com.zefuinha.spring_ionic_backend.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zefuinha.spring_ionic_backend.domain.Categoria;
 import com.zefuinha.spring_ionic_backend.dto.CategoriaDTO;
@@ -21,6 +24,12 @@ public class CategoriaService {
 
 	@Autowired
 	private CategoriaRepository repository;
+
+	@Autowired
+	private CNService cnService;
+
+	@Value("${image.category.size}")
+	private String categorySize;
 
 	public List<Categoria> findAll() {
 		return repository.findAll();
@@ -97,6 +106,33 @@ public class CategoriaService {
 	 */
 	public Categoria fromDTO(CategoriaDTO dto) {
 		return new Categoria(dto.getId(), dto.getNome());
+	}
+	
+	/**
+	 * Faz o upload de uma foto de categoria e salva
+	 * 
+	 * @param multipartFile
+	 * @param id
+	 * @return
+	 */
+	public URI uploadPicture(MultipartFile multipartFile, Integer id) {
+		// Pega a categoria informada
+		Categoria categoria = findById(id);
+		
+		// O profileSize está vazio?
+		if(categorySize == null || categorySize.isEmpty()) {
+			categorySize = "0";
+		}
+		
+		// Faz o upload da imagem
+		URI uri = cnService.uploadFile(multipartFile, Integer.parseInt(categorySize));
+		
+		// Salva a imagem no categoria
+		categoria.setImageUrl(uri.toString());
+		repository.save(categoria);
+		
+		// Devolve a uri da imagem
+		return uri;
 	}
 
 }

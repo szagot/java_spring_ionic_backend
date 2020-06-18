@@ -17,10 +17,12 @@ public class ProdutoDTO implements Serializable {
 	private Integer id;
 	private String nome;
 	private Double preco;
+	private String imageSmallUrl;
 
 	public ProdutoDTO(Produto produto) {
 		id = produto.getId();
 		nome = produto.getNome();
 		preco = produto.getPreco();
+		imageSmallUrl = produto.getImageSmallUrl();
 	}
 }

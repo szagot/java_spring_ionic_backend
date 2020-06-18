@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = { "preco", "categorias", "itens" })
+@EqualsAndHashCode(exclude = { "preco", "categorias", "itens", "imageUrl", "imageSmallUrl" })
 @Entity
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -39,6 +39,8 @@ public class Produto implements Serializable {
 	private Integer id;
 	private String nome;
 	private Double preco;
+	private String imageUrl;
+	private String imageSmallUrl;
 
 	@JsonIgnore
 	@ManyToMany
