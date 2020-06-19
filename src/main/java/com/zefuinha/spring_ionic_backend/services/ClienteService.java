@@ -70,6 +70,23 @@ public class ClienteService {
 
 	}
 
+	public Cliente findByEmail(String email) {
+		// Verifica se o usuário está logado, se é admin e se o email é o próprio
+		UserSecurity user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+
+		// Pega o cliente
+		Cliente cliente = repository.findByEmail(email);
+		if (cliente == null) {
+			throw new ObjectNotFoundException(
+					"Cliente não encontrado. Email: " + email + ", Tipo: " + Cliente.class.getName());
+		}
+
+		return cliente;
+	}
+
 	/**
 	 * \@Transactional Garante que o endereço será salvo na mesma transação
 	 */
@@ -184,23 +201,23 @@ public class ClienteService {
 		if (user == null) {
 			throw new AuthorizationException("Acesso negado");
 		}
-		
+
 		// O profileSize está vazio?
-		if(profileSize == null || profileSize.isEmpty()) {
+		if (profileSize == null || profileSize.isEmpty()) {
 			profileSize = "0";
 		}
 
 		// Faz o upload da imagem
 		URI uri = cnService.uploadFile(multipartFile, Integer.parseInt(profileSize));
-		
+
 		// Pega o cliente logado
 		Cliente cli = repository.findById(user.getId()).orElseThrow(() -> new ObjectNotFoundException(
 				"Cliente não encontrado. Id: " + user.getId() + ", Tipo: " + Cliente.class.getName()));
-		
+
 		// Salva a imagem no cliente
 		cli.setImageUrl(uri.toString());
 		repository.save(cli);
-		
+
 		// Devolve a uri da imagem
 		return uri;
 	}

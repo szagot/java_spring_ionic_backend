@@ -93,6 +93,16 @@ public class ClienteResource {
 
 		return ResponseEntity.ok().body(cliente);
 	}
+	
+	/**
+	 * GET /clientes/email?value=email@exemplo.com
+	 */
+	@GetMapping(value = "/email")
+	public ResponseEntity<Cliente> getByEmail(@RequestParam(value="value") String email) {
+		Cliente cliente = service.findByEmail(email);
+		
+		return ResponseEntity.ok().body(cliente);
+	}
 
 	/**
 	 * POST /clientes
