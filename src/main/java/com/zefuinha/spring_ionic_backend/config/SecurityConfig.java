@@ -50,7 +50,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			// Produtos
 			"/produtos/**",
 			// Categorias
-			"/categorias/**" };
+			"/categorias/**",
+			// Estados e cidades
+			"/estados/**"
+			};
 
 	// Quais endpoints estão liberados apenas para POST (sem necessidade de token)
 	private static final String[] PUBLIC_MATCHERS_POST = {
